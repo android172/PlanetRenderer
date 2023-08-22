@@ -54,9 +54,8 @@ public class CelestialObjectGenerator : MonoBehaviour {
             starS.OnRadiusUpdate();
             // tag
             starS.gameObject.tag = "StarSurface";
-            // initialize
-            starS.initialize();
-            starS.OnShapeSettingsUpdated();
+
+            starS.generate();
 
             // light
             GameObject light = Instantiate(Resources.Load<GameObject>("Starlight"));
@@ -128,5 +127,10 @@ public class CelestialObjectGenerator : MonoBehaviour {
 
             ocean.transform.SetParent(celestial_body.transform);
         }
+
+#if UNITY_EDITOR
+        // Create editor renderer
+        var editorRenderer = surface.AddComponent<CelestialObjectEditorRenderer>();
+#endif
     }
 }
