@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class CelestialObjectEditorRenderer : MonoBehaviour
 {
     void OnRenderObject() {
@@ -11,5 +11,10 @@ public class CelestialObjectEditorRenderer : MonoBehaviour
 
     void OnDisable() {
         GetComponent<CelestialObject>().OnEditorDisable();
+    }
+
+    void Update() {
+        if(!Application.IsPlaying(gameObject))
+            GetComponent<CelestialObject>().EditorRebindBuffers();
     }
 }

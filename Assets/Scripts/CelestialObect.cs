@@ -34,6 +34,12 @@ public abstract class CelestialObject : MonoBehaviour {
     public void OnEditorDisable() {
         release_buffers();
     }
+
+    public void EditorRebindBuffers() {
+        material.SetBuffer("position_buffer", position_buffer);
+        material.SetBuffer("normal_buffer", normal_buffer);
+        material.SetBuffer("uv_buffer", uv_buffer);
+    }
 #endif
 
     ~CelestialObject() {
