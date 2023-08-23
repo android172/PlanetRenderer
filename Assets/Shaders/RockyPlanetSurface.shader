@@ -35,7 +35,7 @@ Shader "RockyPlanetSurface"
 
 			struct v2f {
                 float2 uv : TEXCOORD0;
-                SHADOW_COORDS(1) // put shadows data into TEXCOORD1
+                UNITY_SHADOW_COORDS(1) // put shadows data into TEXCOORD1
                 fixed3 diff : COLOR0;
                 fixed3 ambient : COLOR1;
                 float4 pos : SV_POSITION;
