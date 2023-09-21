@@ -136,6 +136,18 @@ public class CubeSphereMesh {
         return new(indices, vertices);
     }
 
+    public static Vector3 map_point_to_sphere(Vector3 point) {
+        var x_sq = point.x * point.x;
+        var y_sq = point.y * point.y;
+        var z_sq = point.z * point.z;
+
+        point.x *= Mathf.Sqrt(1.0f - y_sq / 2.0f - z_sq / 2.0f + y_sq * z_sq / 3.0f);
+        point.y *= Mathf.Sqrt(1.0f - z_sq / 2.0f - x_sq / 2.0f + z_sq * x_sq / 3.0f);
+        point.z *= Mathf.Sqrt(1.0f - x_sq / 2.0f - y_sq / 2.0f + x_sq * y_sq / 3.0f);
+        
+        return point;
+    }
+
     private static void map_to_unit_sphere(SphereMesh sphere) {
         for (int i = 0; i < sphere.vertices.Length; i++) {
             var v = sphere.vertices[i];

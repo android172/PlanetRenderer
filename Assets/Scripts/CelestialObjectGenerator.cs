@@ -83,7 +83,7 @@ public class CelestialObjectGenerator : MonoBehaviour {
         // material
         planetS.material = new(surfaceMaterial);
         // Camera callback
-        planetS.setup_camera_shape_control(main_camera.transform, camera_shape_controller);
+        planetS.setup_camera_shape_control(main_camera.GetComponent<Camera>(), camera_shape_controller);
         // shape
         switch (objectType) {
             case COType.Asteroid:

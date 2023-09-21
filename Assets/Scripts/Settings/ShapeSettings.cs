@@ -175,6 +175,11 @@ public class ShapeSettings : ScriptableObject {
     [Min(0.5f)]
     public float radius = 1f;
 
+    // LOD compute
+    private LodManager lod_manager;
+    public LodManager get_lod_manager() { return lod_manager; }
+    private bool isInstancedMesh = false;
+
     // Noise shape compute
     public ComputeShader shapeComputeShader;
     private int shader_kernel_id;
@@ -200,28 +205,32 @@ public class ShapeSettings : ScriptableObject {
     }
     public virtual void randomize_seed() { }
 
+    public struct ShapeInitInfo {
+        public Transform shape_transform;
+        public ComputeBuffer initial_position_buffer;
+        public ComputeBuffer position_buffer;
+        public ComputeBuffer normal_buffer;
+        public int vertex_count;
+    }
+
     public virtual void initialize(
         Transform shape_transform,
         ComputeBuffer initial_position_buffer,
         ComputeBuffer position_buffer,
         ComputeBuffer normal_buffer,
-        int vertex_count
+        int vertex_count,                   // if isInstancedMesh is true, this is the number of vertices per tile
+        bool isInstancedMesh,               // if true object is rendered using instanced tiles
+        uint index_count_per_instance       // if isInstancedMesh is true, this is the number of indices per tile
     ) {
         if (shapeComputeShader == null)
             throw new UnityException("Error in :: ShapeSettings :: initialize :: Compute shader not set.");
         if (initial_position_buffer.count < position_buffer.count)
             throw new UnityException("Error in :: ShapeSettings :: initialize :: Initial position buffer incompatible with the current one.");
 
+        this.isInstancedMesh = isInstancedMesh;
+        
         // Needs reference to parent transform
         shape_t = shape_transform;
-
-        // Here we will setup compute shader
-        // First we need to find kernel
-        shader_kernel_id = shapeComputeShader.FindKernel("compute_shape");
-
-        // Compute required thread count
-        shapeComputeShader.GetKernelThreadGroupSizes(shader_kernel_id, out thread_x, out thread_y, out thread_z);
-        thread_x = (uint) Mathf.CeilToInt(1.0f * vertex_count / thread_x);
 
         // Set buffers
         this.initial_position_buffer = initial_position_buffer;
@@ -229,8 +238,23 @@ public class ShapeSettings : ScriptableObject {
         this.normal_buffer = normal_buffer;
         this.vertex_count = vertex_count;
 
-        // Set number of vertices
-        shapeComputeShader.SetInt("num_of_vertices", vertex_count);
+        // Here we will setup compute shader
+        // First we need to find kernel
+        shader_kernel_id = shapeComputeShader.FindKernel("compute_shape");
+
+        if(isInstancedMesh) {
+            // Setup LOD manager
+            lod_manager = new LodManager(shapeComputeShader, index_count_per_instance, vertex_count);
+
+        } else {
+
+            // Compute required thread count
+            shapeComputeShader.GetKernelThreadGroupSizes(shader_kernel_id, out thread_x, out thread_y, out thread_z);
+            thread_x = (uint) Mathf.CeilToInt(1.0f * vertex_count / thread_x);
+
+            // Set number of vertices
+            shapeComputeShader.SetInt("num_of_vertices", vertex_count);
+        }
     }
 
     public void setup_view_based_culling(Transform camera_transform) {
@@ -240,33 +264,33 @@ public class ShapeSettings : ScriptableObject {
 
     public void update_view_based_culling() {
         // Set noise settings
-        set_noise_settings(true);
+        set_noise_settings(shader_kernel_id, true);
 
         // run
         shapeComputeShader.Dispatch(shader_kernel_id, (int) thread_x, (int) thread_y, (int) thread_z);
     }
 
-    private void set_core_noise_settings() {
+    private void set_core_noise_settings(int kernel_id) {
         // Set radius
         shape_t.localScale = new(radius, radius, radius);
 
         // Set buffers
-        shapeComputeShader.SetBuffer(shader_kernel_id, "vertices", initial_position_buffer);
-        shapeComputeShader.SetBuffer(shader_kernel_id, "out_vertices", position_buffer);
-        shapeComputeShader.SetBuffer(shader_kernel_id, "normals", normal_buffer);
+        shapeComputeShader.SetBuffer(kernel_id, "vertices", initial_position_buffer);
+        shapeComputeShader.SetBuffer(kernel_id, "out_vertices", position_buffer);
+        shapeComputeShader.SetBuffer(kernel_id, "normals", normal_buffer);
 
         // Set number of vertices
         shapeComputeShader.SetInt("num_of_vertices", vertex_count);
     }
     protected virtual void set_additional_noise_settings() { }
 
-    private void set_noise_settings(bool is_position_update = false) {
+    private void set_noise_settings(int kernel_id, bool is_position_update = false) {
         // Check validity
         if (shapeComputeShader == null)
             throw new UnityException("Error in :: ShapeSettings :: apply_noise :: Compute shader not set.");
 
         // Set noise settings
-        set_core_noise_settings();
+        set_core_noise_settings(kernel_id);
         set_additional_noise_settings();
 
         // Set culling if enabled
@@ -275,7 +299,13 @@ public class ShapeSettings : ScriptableObject {
 
     public void apply_noise() {
         // Set noise settings
-        set_noise_settings();
+        set_noise_settings(shader_kernel_id);
+
+        if(isInstancedMesh) {
+            // Compute required thread count
+            shapeComputeShader.GetKernelThreadGroupSizes(shader_kernel_id, out thread_x, out thread_y, out thread_z);
+            thread_x = (uint) Mathf.CeilToInt(1.0f * lod_manager.get_node_count() * vertex_count / thread_x);
+        }
 
         // run
         shapeComputeShader.Dispatch(shader_kernel_id, (int) thread_x, (int) thread_y, (int) thread_z);
@@ -384,5 +414,11 @@ public class ShapeSettings : ScriptableObject {
         var center_to_int_dir = (intersection_p - sphere_center).normalized;
 
         return Vector3.Dot(center_to_int_dir, center_to_org_dir);
+    }
+
+    public void run_lod_kernels(Camera camera) {
+        set_noise_settings(lod_manager.get_kernel_id());
+
+        lod_manager.run_lod_kernels(camera, shape_t, radius);
     }
 }

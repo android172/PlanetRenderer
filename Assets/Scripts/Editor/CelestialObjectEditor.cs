@@ -28,6 +28,10 @@ public class CelestialObjectEditor : Editor {
                 min_resolution = 2;
                 max_resolution = 1000;
                 break;
+            case SphereMeshGenerator.SphereType.Tile:
+                min_resolution = 2;
+                max_resolution = 50;
+                break;
         }
 
         SerializedProperty resolution_property = CO_serialized.FindProperty("resolution");

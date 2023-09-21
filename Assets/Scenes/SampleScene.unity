@@ -356,13 +356,13 @@ MonoBehaviour:
   defaultRockyPlanetDryShapeSettings: {fileID: 11400000, guid: a1d71c1611fd03048968c0148fde601c, type: 2}
   defaultRockyPlanetWetShapeSettings: {fileID: 0}
   defaultOceanShapeSettings: {fileID: 0}
-  surfaceMaterial: {fileID: 2100000, guid: f38dc9595a915aa4793fe196985cb35b, type: 2}
+  surfaceMaterial: {fileID: 2100000, guid: d96cf7cc5257cf3458569d96c3548e66, type: 2}
   oceanMaterial: {fileID: 0}
   starMaterial: {fileID: 0}
   objectName: DefPlanet
   objectType: 2
   objectRadius: 1
-  sphereType: 1
+  sphereType: 2
   sphereResolution: 15
 --- !u!4 &1708308205
 Transform:

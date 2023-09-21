@@ -45,6 +45,10 @@ public class COGenEditor : Editor {
                 min_resolution = 2;
                 max_resolution = 1000;
                 break;
+            case SphereMeshGenerator.SphereType.Tile:
+                min_resolution = 2;
+                max_resolution = 50;
+                break;
         }
         if (COG.sphereResolution < min_resolution) COG.sphereResolution = min_resolution;
         if (COG.sphereResolution > max_resolution) COG.sphereResolution = max_resolution;
