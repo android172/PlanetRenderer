@@ -185,9 +185,9 @@ Shader "RockyPlanetSurface"
 			float2 tz = coords.xy * _MapScale[biome];
 
 			// Sample macro variations
-			half4 mvx = sample_macro_variation(tx);
-			half4 mvy = sample_macro_variation(ty);
-			half4 mvz = sample_macro_variation(tz);
+			half4 mvx = sample_macro_variation(tx / 10.f);
+			half4 mvy = sample_macro_variation(ty / 10.f);
+			half4 mvz = sample_macro_variation(tz / 10.f);
 
 			// Sample diffuse map
 			half4 sample_x = UNITY_SAMPLE_TEX2DARRAY(_DiffuseMaps, float3(tx, biome));
@@ -235,24 +235,15 @@ Shader "RockyPlanetSurface"
 			float2 uv_scale_3 = uv * 0.002f;
 
 			// Sample macro variation texture
-			float sample_scale_1 = tex2D(_MacroVariation, uv_scale_1).r + 0.5f;
-			float sample_scale_2 = tex2D(_MacroVariation, uv_scale_2).r + 0.5f;
-			float sample_scale_3 = tex2D(_MacroVariation, uv_scale_3).r + 0.5f;
-			float sample = sample_scale_1 * sample_scale_2 * sample_scale_3;
+			half sample_scale_1 = tex2D(_MacroVariation, uv_scale_1).r;
+			half sample_scale_2 = tex2D(_MacroVariation, uv_scale_2).r;
+			half sample_scale_3 = tex2D(_MacroVariation, uv_scale_3).r;
+			half sample = sample_scale_1 * sample_scale_2 * sample_scale_3;
 
 			// Reduce contrast
-			return half4(lerp((half3) 0.5f, (half3)1.f, sample), 1.f);
+			half3 sample_reduced = lerp((half3) 0.5f, (half3)1.f, sample);
+			return half4(sample_reduced, 1.f);
 		}
-
-		// void normal_based_blending(float3 normal, float3 up) {
-			// 	float blend_sharpness = 30.f;
-			// 	float blend_bias = -12.f;
-
-			// 	float cos_angle = dot(normal, normalize(up));
-			// 	float a = (0.5f * cos_angle + 0.5f) * blend_sharpness;
-			// 	float b = blend_bias - 0.5f * blend_sharpness;
-			// 	clamp(a + b, 0.0f, 1.0f);
-		// }
 		
 #else
 		void vert (inout appdata v, out Input data) {}
