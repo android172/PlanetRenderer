@@ -304,7 +304,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.01, z: -1.601}
+  m_LocalPosition: {x: -117.25, y: -0.01, z: 1.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -359,11 +359,12 @@ MonoBehaviour:
   surfaceMaterial: {fileID: 2100000, guid: f38dc9595a915aa4793fe196985cb35b, type: 2}
   oceanMaterial: {fileID: 0}
   starMaterial: {fileID: 0}
+  defaultSurfaceMaterialSettings: {fileID: 11400000, guid: 76215ff3dbcff9d4a8d3da527ae0c804, type: 2}
   objectName: DefPlanet
   objectType: 2
   objectRadius: 1
   sphereType: 1
-  sphereResolution: 15
+  sphereResolution: 1000
 --- !u!4 &1708308205
 Transform:
   m_ObjectHideFlags: 0

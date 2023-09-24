@@ -8,13 +8,19 @@ public class CelestialObjectEditor : Editor {
 
     // sub-editors
     Editor shape_editor;
+    Editor surface_mat_editor;
 
     private void OnEnable() {
         CO = (CelestialObject) target;
         CO_serialized = new SerializedObject(CO);
     }
 
-    protected void draw_settings_editor(ref Editor editor, Object settings, System.Action on_resolution_updated, System.Action on_settings_updated) {
+    protected void draw_shape_settings_editor(
+        ref Editor editor,
+        Object settings,
+        System.Action on_resolution_updated,
+        System.Action on_settings_updated
+    ) {
         if (settings == null) return;
 
         int min_resolution = 1;
@@ -51,6 +57,24 @@ public class CelestialObjectEditor : Editor {
         CO_serialized.ApplyModifiedProperties();
     }
 
+    protected void draw_surface_mat_settings_editor(
+        ref Editor editor,
+        Object settings,
+        System.Action on_settings_updated
+    ) {
+        if (settings == null) return;
+
+        using (var check = new EditorGUI.ChangeCheckScope()) {
+            EditorGUILayout.InspectorTitlebar(true, settings);
+            CreateCachedEditor(settings, null, ref editor);
+            editor.OnInspectorGUI();
+
+            if (check.changed) {
+                on_settings_updated?.Invoke();
+            }
+        }
+    }
+
     public override void OnInspectorGUI() {
         using (var check = new EditorGUI.ChangeCheckScope()) {
             base.OnInspectorGUI();
@@ -60,6 +84,7 @@ public class CelestialObjectEditor : Editor {
             CO = (CelestialObject) target;
         CO_serialized ??= new SerializedObject(CO);
 
-        draw_settings_editor(ref shape_editor, CO.shapeSettings, CO.OnResolutionChanged, CO.OnShapeSettingsUpdated);
+        draw_shape_settings_editor(ref shape_editor, CO.shapeSettings, CO.OnResolutionChanged, CO.OnShapeSettingsUpdated);
+        draw_surface_mat_settings_editor(ref surface_mat_editor, CO.surfaceMaterialSettings, CO.OnSurfaceMaterialInfoChanged);
     }
 }

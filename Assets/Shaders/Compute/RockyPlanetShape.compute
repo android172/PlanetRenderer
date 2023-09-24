@@ -1,4 +1,5 @@
 ﻿// includes
+#include "../Includes/Biomes.cginc"
 #include "./Includes/Noise/FractalNoise.cginc"
 #include "./Includes/ShapeComputeUtil.cginc"
 #include "./Includes/SmoothMinMax.cginc"
@@ -10,6 +11,7 @@
 StructuredBuffer<float3> vertices;
 RWStructuredBuffer<float3> out_vertices;
 RWStructuredBuffer<float3> normals;
+RWStructuredBuffer<uint> biomes;
 uint num_of_vertices;
 
 // Settings
@@ -30,6 +32,7 @@ float flatness_ratio;
 
 bool vertex_is_visible(float3 vertex);
 bool vertex_was_visible(float3 vertex);
+uint compute_biome(NoiseValues noise, float height, float vertex_angle);
 
 // Kernels
 [numthreads(256, 1, 1)] void compute_shape(uint id
@@ -45,12 +48,23 @@ bool vertex_was_visible(float3 vertex);
   if (vertex_was_visible(vertices[id]))
     return;
 
+  // Compute noise & height
+  NoiseValues noise = compute_noise(vertices[id]);
+  float height = compute_height(noise);
+
   // Compute new position
-  out_vertices[id] = apply_noise(vertices[id]);
+  out_vertices[id] = vertices[id] * height;
 
   // Compute surface normal
   float diff_angle = 1.0 / sqrt(num_of_vertices / 6.0);
   normals[id] = compute_normal(vertices[id], out_vertices[id], diff_angle);
+
+  // Compute relative angle
+  float rel_normal_angle = dot(normals[id], vertices[id]);
+
+  // Compute biome info
+  uint biome = compute_biome(noise, height, rel_normal_angle);
+  apply_biome(biomes, id, biome);
 }
 
 bool vertex_is_visible(float3 vertex) {
@@ -65,7 +79,57 @@ bool vertex_was_visible(float3 vertex) {
   return dot(vertex, camera_dir) >= max_render_angle;
 }
 
-float3 apply_noise(float3 position) {
+uint compute_biome(NoiseValues noise, float height, float vertex_angle) {
+  // Ocean biomes
+  if (noise.ocean_mask > 0.1) {
+    if (height >= 1.f) {
+      if (noise.ocean_mask > 0.7)
+        return BIOME_ISLAND;
+      if (noise.flatness > 0)
+        if (noise.ridge_1 + noise.ridge_2 > 0.06)
+          return BIOME_MOUNTAINS;
+      return BIOME_BEACH;
+    }
+    if (noise.flatness > 0) {
+      if (noise.ridge_2 > 0.06)
+        return BIOME_U_MOUNTAINS;
+    }
+    if (noise.ocean_mask > 0.5)
+      return BIOME_DEEP_WATERS;
+    return BIOME_UNDERWATER;
+  }
+
+  // Crater
+  if (noise.crater < -0.001)
+    return BIOME_CRATER;
+  if (noise.crater > 0.001)
+    return BIOME_CRATER_RIDGE;
+
+  // Continent
+  if (noise.flatness > 0) {
+    if (noise.ridge_1 > 0.14)
+      return BIOME_PEAKS;
+    if (noise.ridge_1 > 0.06) {
+      if (vertex_angle < sqrt(3) / 2.f) // 30 deg
+        return BIOME_MOUNTAINS;
+      else
+        return BIOME_VALLEY;
+    }
+    if (noise.ridge_1 > 0.02) {
+      if (vertex_angle < sqrt(3) / 2.f) // 30 deg
+        return BIOME_MOUNTAINS;
+      else if (noise.continent_mask < 0.999)
+        return BIOME_BEACH;
+      return BIOME_FLATLANDS;
+    }
+  }
+
+  if (noise.continent_mask < 0.999)
+    return BIOME_BEACH;
+  return BIOME_FLATLANDS;
+}
+
+NoiseValues compute_noise(float3 position) {
   // enables ==for readability==
   int continents_enabled = enabled[0].x;
   int general_noise_enabled = enabled[0].y;
@@ -111,12 +175,17 @@ float3 apply_noise(float3 position) {
 
   // both //
   // bumps
-  float bumbs = general_noise_enabled * //
+  float bumps = general_noise_enabled * //
                 fractal_noise(position, noise_settings_both);
 
-  // Final height
-  float height =
-      1 + (c_base + smax(ridge_1, ridge_2, 8.0) + crater + bumbs) / 4;
+  NoiseValues noise_values = {continent_mask, ocean_mask, flatness, c_base,
+                              ridge_1,        ridge_2,    crater,   bumps};
+  return noise_values;
+}
 
-  return position * height;
+float compute_height(NoiseValues noise) {
+  // Final height
+  return 1 + (noise.c_base + smax(noise.ridge_1, noise.ridge_2, 8.0) +
+              noise.crater + noise.bumps) /
+                 4;
 }

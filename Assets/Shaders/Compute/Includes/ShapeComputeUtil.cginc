@@ -1,13 +1,26 @@
 ﻿// ///////////////// //
 // Noise computation //
 // ///////////////// //
-float3 apply_noise(float3 position);
+struct NoiseValues {
+  float continent_mask;
+  float ocean_mask;
+  float flatness;
+  float c_base;
+  float ridge_1;
+  float ridge_2;
+  float crater;
+  float bumps;
+};
+
+NoiseValues compute_noise(float3 position);
+float compute_height(NoiseValues noise);
 
 // ////////////////// //
 // Normal computation //
 // ////////////////// //
 float3 rotate_vector(float3 v, float3 ax, float angle);
 float3 compute_triangle_normal(float3 up, float3 p1, float3 p2, float3 p3);
+float3 compute_neighbour(float3 up, float3 ax, float angle);
 
 float3 compute_normal(float3 up, float3 p0, float diff_angle) {
   // Compute rotation axis
@@ -16,10 +29,10 @@ float3 compute_normal(float3 up, float3 p0, float diff_angle) {
   float3 rot_axis_2 = normalize(cross(up, rot_axis_1));
 
   // Copmute neighbouring points
-  float3 p1 = apply_noise(rotate_vector(up, rot_axis_1, diff_angle));
-  float3 p2 = apply_noise(rotate_vector(up, rot_axis_1, -diff_angle));
-  float3 p3 = apply_noise(rotate_vector(up, rot_axis_2, diff_angle));
-  float3 p4 = apply_noise(rotate_vector(up, rot_axis_2, -diff_angle));
+  float3 p1 = compute_neighbour(up, rot_axis_1, diff_angle);
+  float3 p2 = compute_neighbour(up, rot_axis_1, -diff_angle);
+  float3 p3 = compute_neighbour(up, rot_axis_2, diff_angle);
+  float3 p4 = compute_neighbour(up, rot_axis_2, -diff_angle);
 
   // Compute triange normals
   float3 n1 = compute_triangle_normal(up, p0, p1, p3);
@@ -31,6 +44,13 @@ float3 compute_normal(float3 up, float3 p0, float diff_angle) {
   float3 n = (n1 + n2 + n3 + n4) / 4.0;
 
   return n;
+}
+
+float3 compute_neighbour(float3 up, float3 ax, float angle) {
+  float3 position = rotate_vector(up, ax, angle);
+  NoiseValues noise = compute_noise(position);
+  float height = compute_height(noise);
+  return position * height;
 }
 
 float3 rotate_vector(float3 v, float3 ax, float angle) {

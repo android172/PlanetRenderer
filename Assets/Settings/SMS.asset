@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4aa72b3050cc9644bb363f94910342b, type: 3}
+  m_Name: SMS
+  m_EditorClassIdentifier: 
+  biomeMaterial:
+  - mapDiffuse: {fileID: 2800000, guid: f75a9ce17d76b4cb4b52da3f774ede27, type: 3}
+    mapNormal: {fileID: 2800000, guid: 121bffe0070fd47ce9362988d7beed39, type: 3}
+    mapOcclusion: {fileID: 2800000, guid: b70578b0c62b74494a9f9e4e8d29d48a, type: 3}
+    normalStrength: 1
+    occlusionStrength: 1
+    scale: 4.69
+    metallic: 0
+    glossiness: 0.77
+    color: {r: 0.3846666, g: 1, b: 0.29000002, a: 0}
+  - mapDiffuse: {fileID: 2800000, guid: 0c2641f16f0c74dc8bd65cc0f24b03df, type: 3}
+    mapNormal: {fileID: 2800000, guid: 912fe0350b83a4934aa3799ef6fced00, type: 3}
+    mapOcclusion: {fileID: 2800000, guid: c8fd564835bc6474c84c6798e7d7e2b5, type: 3}
+    normalStrength: 2
+    occlusionStrength: 1
+    scale: 2.72
+    metallic: 0.564
+    glossiness: 0.213
+    color: {r: 1, g: 1, b: 1, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0, g: 0.07769104, b: 0.6415094, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0.062566735, g: 0.60992455, b: 0.6981132, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0, g: 0, b: 0, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 1, g: 0.97466964, b: 0.305, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0.9278021, g: 0, b: 1, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0.011213934, g: 0.7924528, b: 0.08946552, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 1, g: 1, b: 1, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0.6792453, g: 0.29156286, b: 0.29156286, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 1, g: 0, b: 0, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0, g: 0, b: 0, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0, g: 0, b: 0, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0, g: 0, b: 0, a: 0}
+  - mapDiffuse: {fileID: 0}
+    mapNormal: {fileID: 0}
+    mapOcclusion: {fileID: 0}
+    normalStrength: 0
+    occlusionStrength: 0
+    scale: 0
+    metallic: 0
+    glossiness: 0
+    color: {r: 0, g: 0, b: 0, a: 0}

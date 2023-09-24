@@ -2,7 +2,11 @@ fileFormatVersion: 2
 guid: 4aa05ae23511a1744b7d01b4ea01aced
 ShaderImporter:
   externalObjects: {}
-  defaultTextures: []
+  defaultTextures:
+  - _DiffuseMaps: {instanceID: 0}
+  - _NormalMaps: {instanceID: 0}
+  - _OcclusionMaps: {instanceID: 0}
+  - _MacroVariation: {fileID: 2800000, guid: 2599a7d8af02a7b40a46fa1674443012, type: 3}
   nonModifiableTextures: []
   userData: 
   assetBundleName: 

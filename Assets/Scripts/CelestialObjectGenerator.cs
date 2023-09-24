@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CelestialObjectGenerator : MonoBehaviour {
 
@@ -25,6 +26,8 @@ public class CelestialObjectGenerator : MonoBehaviour {
     Material oceanMaterial;
     [SerializeField]
     Material starMaterial;
+
+    public SurfaceMaterialSettings defaultSurfaceMaterialSettings;
 
     public string objectName = "Celestial Object";
     public COType objectType = COType.Asteroid;
@@ -105,6 +108,9 @@ public class CelestialObjectGenerator : MonoBehaviour {
         }
         planetS.shapeSettings.radius = objectRadius;
         planetS.shapeSettings.randomize_seed();
+        // colors
+        planetS.surfaceMaterialSettings = ScriptableObject.CreateInstance<SurfaceMaterialSettings>();
+        planetS.surfaceMaterialSettings.set_settings(defaultSurfaceMaterialSettings);
         // tag
         planetS.gameObject.tag = "Surface";
         // initialize

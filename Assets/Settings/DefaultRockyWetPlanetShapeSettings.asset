@@ -41,7 +41,7 @@ MonoBehaviour:
     amplitudeFading: 0.5
     baseFrequency: 3
     frequencyMultiplier: 2
-    strength: 0.2
+    strength: 0.1
     baseHeight: 0
     seed: {x: -83.28, y: 23.43, z: -161.26}
   mountainsNoise:
@@ -50,7 +50,7 @@ MonoBehaviour:
     amplitudeFading: 0.5
     baseFrequency: 4.5
     frequencyMultiplier: 3
-    strength: 1
+    strength: 2
     baseHeight: 0
     seed: {x: 0, y: 0, z: 0}
     power: 2
@@ -61,7 +61,7 @@ MonoBehaviour:
     amplitudeFading: 0.5
     baseFrequency: 4
     frequencyMultiplier: 3
-    strength: 1
+    strength: 2
     baseHeight: -0.31
     seed: {x: 0, y: 0, z: 0}
     power: 2
@@ -73,7 +73,7 @@ MonoBehaviour:
     amplitudeFading: 0.5
     baseFrequency: 4
     frequencyMultiplier: 2
-    strength: 0.8
+    strength: 2
     baseHeight: 0
     seed: {x: 0, y: 0, z: 0}
     depth: 0.05
